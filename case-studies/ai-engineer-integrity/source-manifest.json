@@ -1,0 +1,23 @@
+{
+  "case_id": "ai-engineer-integrity",
+  "candidate": {
+    "fictional": true,
+    "source_repository": "https://github.com/aarangop/resume-mcp",
+    "source_file": "templates/baseline_resume.md",
+    "source_commit": "b763ba27f3867793e46173a2f1122e6280539bc0",
+    "license": "MIT",
+    "retrieved_at": "2026-08-29",
+    "local_path": "input/candidate-resume.md",
+    "sha256": "ec6694eca9c9afc572ae34ccdfdfaf7c39c3d64220db339452323d06cf1f8d46"
+  },
+  "target": {
+    "official_source": true,
+    "url": "https://openai.com/careers/machine-learning-engineer-integrity-san-francisco/",
+    "retrieved_at": "2026-08-29",
+    "status_at_retrieval": "active",
+    "local_markdown_path": "input/target-role.md",
+    "local_markdown_sha256": "a998caf22c232e3773169a68cf18b31d242ced882c5cfb677876087321a3415e",
+    "local_json_path": "input/target-role.json",
+    "local_json_sha256": "f0e93a8d08cdeb1908d11d831b1d143ae84094f066245da70da21aaa75dc81bd"
+  }
+}

@@ -1,0 +1,47 @@
+name: Evidence-quality problem
+description: Report an unsupported conclusion or an incorrect evidence state.
+title: "[Evidence]: "
+labels: [evidence-quality]
+body:
+  - type: markdown
+    attributes:
+      value: Use a public example or a minimal synthetic case. Never paste a private resume.
+  - type: dropdown
+    id: problem
+    attributes:
+      label: Problem type
+      options:
+        - Unsupported conclusion
+        - Incorrect proved, claimed, missing, or unknown state
+        - Missing or weak source attribution
+        - Preparation item does not trace to evidence
+        - Other evidence-boundary defect
+    validations:
+      required: true
+  - type: textarea
+    id: location
+    attributes:
+      label: Where does it appear?
+      description: Link the public case, file, module, or JSON path.
+    validations:
+      required: true
+  - type: textarea
+    id: reason
+    attributes:
+      label: Why is the conclusion unsupported?
+      description: Identify the available evidence and the narrower conclusion it supports.
+    validations:
+      required: true
+  - type: textarea
+    id: expected
+    attributes:
+      label: Expected evidence treatment
+    validations:
+      required: true
+  - type: checkboxes
+    id: privacy
+    attributes:
+      label: Privacy check
+      options:
+        - label: This report contains only public, synthetic, or fully redacted material.
+          required: true

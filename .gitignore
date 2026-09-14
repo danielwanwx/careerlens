@@ -1,0 +1,17 @@
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.DS_Store
+dist/
+build/
+*.egg-info/
+.superpowers/
+/videos/
+/data/applications.sqlite3
+/data/applications.sqlite3-wal
+/data/applications.sqlite3-shm
+/data/applications.sqlite3-journal
+/personal-runbook/
+/data/application-tracker.json
+/data/job-tracker.csv
+/data/interview-and-events.md

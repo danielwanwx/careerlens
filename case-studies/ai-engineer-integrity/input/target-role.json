@@ -1,0 +1,28 @@
+{
+  "source_id": "openai-mle-integrity-2026-08-29",
+  "employer": "OpenAI",
+  "role": "Machine Learning Engineer, Integrity",
+  "team": "Applied AI Engineering",
+  "location": "San Francisco, California",
+  "retrieved_at": "2026-08-29",
+  "status_at_retrieval": "active",
+  "url": "https://openai.com/careers/machine-learning-engineer-integrity-san-francisco/",
+  "compensation": {
+    "currency": "USD",
+    "minimum": 266000,
+    "maximum": 555000,
+    "equity": true
+  },
+  "capabilities": [
+    "production_ml_models",
+    "deep_learning_transformers",
+    "scalable_data_pipelines",
+    "model_optimization_monitoring",
+    "pytorch_tensorflow",
+    "algorithms_software_engineering",
+    "llm_post_training",
+    "content_integrity_abuse_prevention",
+    "cross_functional_delivery",
+    "end_to_end_ownership"
+  ]
+}

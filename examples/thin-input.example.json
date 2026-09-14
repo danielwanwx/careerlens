@@ -1,0 +1,19 @@
+{
+  "identity": {"schema_version": "personalized_runbook.v1", "runbook_id": "example-thin-input", "generated_at": "2026-08-29T00:00:00Z", "locale": "en-US"},
+  "input_status": {"present_inputs": ["target_role_label"], "missing_critical_inputs": ["candidate_evidence", "target_source", "weekly_capacity"], "constraints": {}},
+  "target_picture": {"role_label": "Product Manager", "confidence": "low"},
+  "candidate_picture": {"evidence_unit_count": 0, "scorable_unit_count": 0, "source_safe": true},
+  "fit_assessment": [{"cluster": "product_execution", "status": "unknown", "proof_refs": []}],
+  "decision_state": {"kind": "input_gate", "show_numeric_score": false, "score": null, "reason": "Candidate evidence and a target source are missing.", "next_action": "add_candidate_evidence"},
+  "resume_guidance": [],
+  "target_portfolio": {"shared_core": [], "company_deltas": []},
+  "strategy": {"positioning": "Pending evidence.", "stop_rules": ["Do not infer fit from a role label alone."]},
+  "interview_map": {"rounds": []},
+  "learning_tracks": [],
+  "question_bank": [{"question_id": "q-input-1", "kind": "recruiter", "prompt": "Which candidate-owned artifact best represents your recent work?", "why_asked": "Candidate evidence is required before diagnosis."}],
+  "answer_guidance": [],
+  "roadmap": {"weeks": 1, "weekly_capacity_hours": 0, "phases": []},
+  "application_experiment": {"hypothesis": "No experiment until a target cohort exists.", "cohorts": []},
+  "sources": [],
+  "quality": {"source_safe": true, "export_ready": false, "unresolved_gaps": ["candidate_evidence", "target_source"]}
+}

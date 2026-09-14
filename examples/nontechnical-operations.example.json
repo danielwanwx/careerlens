@@ -1,0 +1,22 @@
+{
+  "identity": {"schema_version": "personalized_runbook.v1", "runbook_id": "example-nontechnical-operations", "generated_at": "2026-08-29T00:00:00Z", "locale": "en-US"},
+  "input_status": {"present_inputs": ["candidate_evidence", "target_description", "timeline"], "missing_critical_inputs": [], "constraints": {"weeks": 3}},
+  "target_picture": {"role_label": "Clinical Operations Manager", "role_families": ["clinical_operations"], "confidence": "medium"},
+  "candidate_picture": {"evidence_unit_count": 2, "scorable_unit_count": 2, "source_safe": true},
+  "fit_assessment": [
+    {"cluster": "study_operations", "label": "Study operations", "status": "proved", "proof_refs": ["candidate:study-1"]},
+    {"cluster": "inspection_readiness", "label": "Inspection readiness", "status": "claimed", "proof_refs": ["candidate:inspection-1"]}
+  ],
+  "decision_state": {"kind": "conditional", "show_numeric_score": false, "score": null, "reason": "Inspection-readiness ownership needs stronger attribution.", "next_action": "clarify_inspection_ownership"},
+  "resume_guidance": [{"finding_id": "inspection-scope", "defect_type": "unclear_scope_attribution", "priority": "A", "why_it_matters": "The target evaluates individual ownership of compliant operations.", "safe_direction": "Clarify the candidate-confirmed decision, collaborators, and observable outcome.", "truth_boundary": "Do not claim regulatory authority or outcomes not documented by the candidate.", "completion_check": "A reviewer can separate personal ownership from team responsibility."}],
+  "target_portfolio": {"shared_core": [{"capability": "study_operations", "candidate_state": "proved"}], "company_deltas": []},
+  "strategy": {"positioning": "Lead with verified study-operations ownership.", "stop_rules": ["Do not add regulatory claims from target-side sources."]},
+  "interview_map": {"rounds": [{"round_id": "hiring_manager", "label": "Operations leadership", "purpose": "Test compliant execution, escalation, and stakeholder judgment."}]},
+  "learning_tracks": [{"track_id": "inspection", "title": "Inspection readiness", "resources": [{"resource_id": "fda-bioresearch", "title": "FDA Bioresearch Monitoring", "url": "https://www.fda.gov/inspections-compliance-enforcement-and-criminal-investigations/compliance-program-guidance-manual-cpgm/bioresearch-monitoring-program-bimo-compliance-programs", "source_class": "government", "dimension": "inspection_readiness", "why_it_fits": "Provides authoritative target-side inspection context.", "reading_scope": "Review program purpose and inspection responsibilities relevant to the target role.", "skip_guidance": "Skip enforcement cases unrelated to the target scope.", "completion_condition": "Explain the preparation boundary, escalation path, and one evidence-control example without claiming candidate experience.", "sequence": 1, "dependencies": [], "freshness": {"status": "verify_before_use"}, "verification_state": "source_identified"}]}],
+  "question_bank": [{"question_id": "q-inspection-1", "kind": "hiring_manager", "prompt": "Describe a time you prepared an operation for external review.", "why_asked": "Tests the open ownership and compliance signal."}],
+  "answer_guidance": [{"question_id": "q-inspection-1", "outline": ["context", "personal decision", "control mechanism", "outcome", "limitation"], "supported_refs": ["candidate:inspection-1"], "missing_facts": ["documented outcome"], "prohibited_claims": ["unsupported regulatory result"]}],
+  "roadmap": {"weeks": 3, "weekly_capacity_hours": 4, "phases": [{"phase_id": "evidence", "label": "Evidence repair", "actions": [{"action_id": "a-inspection", "priority": "A", "title": "Build an inspection-readiness evidence brief", "linked_refs": ["gap:inspection_readiness"], "estimated_minutes": 150, "completion_condition": "Deliver a three-minute evidence-bounded answer and two follow-ups."}]}]},
+  "application_experiment": {"hypothesis": "Clear compliance ownership improves qualified responses.", "cohorts": [{"name": "baseline", "purpose": "Measure the current positioning."}]},
+  "sources": [{"source_id": "target-clinical-1", "title": "Synthetic clinical operations target", "url": "https://example.com/jobs/clinical-operations-manager", "source_class": "unknown", "claim_scope": "Example target requirements only", "freshness": {"status": "example"}}],
+  "quality": {"source_safe": true, "export_ready": true, "unresolved_gaps": ["inspection_readiness"]}
+}

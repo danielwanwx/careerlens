@@ -1,0 +1,22 @@
+{
+  "identity": {"schema_version": "personalized_runbook.v1", "runbook_id": "example-source-backed", "generated_at": "2026-08-29T00:00:00Z", "locale": "en-US"},
+  "input_status": {"present_inputs": ["candidate_evidence", "target_description", "timeline"], "missing_critical_inputs": [], "constraints": {"weeks": 4}},
+  "target_picture": {"role_label": "Senior Reliability Engineer", "role_families": ["reliability_engineering"], "confidence": "high"},
+  "candidate_picture": {"evidence_unit_count": 3, "scorable_unit_count": 2, "source_safe": true},
+  "fit_assessment": [
+    {"cluster": "incident_response", "label": "Incident response", "status": "proved", "proof_refs": ["candidate:incident-1"]},
+    {"cluster": "capacity_planning", "label": "Capacity planning", "status": "claimed", "proof_refs": ["candidate:capacity-1"]}
+  ],
+  "decision_state": {"kind": "conditional", "show_numeric_score": false, "score": null, "reason": "One critical target capability still needs inspectable evidence.", "next_action": "repair_capacity_evidence"},
+  "resume_guidance": [{"finding_id": "capacity-proof", "defect_type": "weak_proof_ingredients", "priority": "A", "why_it_matters": "The target expects production capacity decisions.", "safe_direction": "Add a candidate-confirmed example with mechanism, constraint, and result.", "truth_boundary": "Do not invent scale or ownership.", "completion_check": "A reviewer can identify the decision and its outcome."}],
+  "target_portfolio": {"shared_core": [{"capability": "incident_response", "candidate_state": "proved"}], "company_deltas": []},
+  "strategy": {"positioning": "Lead with verified reliability ownership.", "stop_rules": ["Do not expand volume until Priority A evidence is inspectable."]},
+  "interview_map": {"rounds": [{"round_id": "system_design", "label": "Reliability design", "purpose": "Test capacity and failure trade-offs."}]},
+  "learning_tracks": [{"track_id": "capacity", "title": "Capacity planning", "resources": [{"resource_id": "sre-book", "title": "Site Reliability Engineering", "url": "https://sre.google/sre-book/table-of-contents/", "source_class": "primary_technical", "dimension": "capacity_planning", "why_it_fits": "Addresses the open design gap.", "reading_scope": "Read the capacity planning chapter and capture the demand model.", "skip_guidance": "Skip unrelated organizational chapters in this pass.", "completion_condition": "Explain demand, headroom, overload behavior, and one trade-off.", "sequence": 1, "dependencies": [], "freshness": {"status": "stable"}, "verification_state": "verified"}]}],
+  "question_bank": [{"question_id": "q-capacity-1", "kind": "system_design", "prompt": "How would you estimate and protect capacity?", "why_asked": "Tests the open target capability."}],
+  "answer_guidance": [{"question_id": "q-capacity-1", "outline": ["requirements", "demand model", "failure policy", "trade-off"], "supported_refs": ["candidate:capacity-1"], "missing_facts": ["measured headroom"], "prohibited_claims": ["unsupported scale"]}],
+  "roadmap": {"weeks": 4, "weekly_capacity_hours": 5, "phases": [{"phase_id": "evidence", "label": "Evidence repair", "actions": [{"action_id": "a-capacity", "priority": "A", "title": "Build a capacity decision brief", "linked_refs": ["gap:capacity_planning"], "estimated_minutes": 180, "completion_condition": "Deliver a five-minute explanation and answer two failure follow-ups."}]}]},
+  "application_experiment": {"hypothesis": "Verified reliability evidence improves qualified responses.", "cohorts": [{"name": "baseline", "purpose": "Measure current positioning."}]},
+  "sources": [{"source_id": "target-1", "title": "Synthetic target requirement", "url": "https://example.com/jobs/reliability-engineer", "source_class": "unknown", "claim_scope": "Example target requirements only", "freshness": {"status": "example"}}],
+  "quality": {"source_safe": true, "export_ready": true, "unresolved_gaps": ["capacity_planning"]}
+}

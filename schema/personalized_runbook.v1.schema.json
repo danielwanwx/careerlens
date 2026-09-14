@@ -1,0 +1,30 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "personalized_runbook.v1.schema.json",
+  "title": "CareerLens Artifact v1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["identity", "input_status", "target_picture", "candidate_picture", "fit_assessment", "decision_state", "resume_guidance", "target_portfolio", "strategy", "interview_map", "learning_tracks", "question_bank", "answer_guidance", "roadmap", "application_experiment", "sources", "quality"],
+  "properties": {
+    "identity": {"type": "object", "required": ["schema_version", "runbook_id", "generated_at"], "properties": {"schema_version": {"const": "personalized_runbook.v1"}, "runbook_id": {"type": "string", "minLength": 1}, "generated_at": {"type": "string", "minLength": 1}, "locale": {"type": "string"}}, "additionalProperties": true},
+    "input_status": {"type": "object", "required": ["present_inputs", "missing_critical_inputs"], "properties": {"present_inputs": {"type": "array", "items": {"type": "string"}}, "missing_critical_inputs": {"type": "array", "items": {"type": "string"}}, "constraints": {"type": "object"}}, "additionalProperties": true},
+    "target_picture": {"type": "object"},
+    "candidate_picture": {"type": "object"},
+    "fit_assessment": {"type": "array", "items": {"type": "object", "required": ["cluster", "status"], "properties": {"cluster": {"type": "string"}, "status": {"enum": ["proved", "claimed", "missing", "unknown"]}}, "additionalProperties": true}},
+    "decision_state": {"type": "object", "required": ["kind", "show_numeric_score", "next_action"], "properties": {"kind": {"enum": ["input_gate", "conditional", "ready"]}, "show_numeric_score": {"type": "boolean"}, "score": {"type": ["number", "null"]}, "next_action": {"type": "string"}, "reason": {"type": "string"}}, "additionalProperties": true},
+    "resume_guidance": {"type": "array", "items": {"type": "object"}},
+    "target_portfolio": {"type": "object", "required": ["shared_core", "company_deltas"], "properties": {"shared_core": {"type": "array"}, "company_deltas": {"type": "array"}}, "additionalProperties": true},
+    "strategy": {"type": "object"},
+    "module_selection": {"type": "array", "items": {"type": "object", "required": ["module_id", "state", "reason", "evidence_refs", "confidence"], "properties": {"module_id": {"type": "string"}, "state": {"enum": ["enabled", "deferred", "suppressed"]}, "reason": {"type": "string"}, "evidence_refs": {"type": "array", "items": {"type": "string"}}, "confidence": {"enum": ["high", "medium", "low"]}}, "additionalProperties": true}},
+    "selection_methodology": {"type": "object", "required": ["question_factors", "resource_factors", "plan_factors"], "properties": {"question_factors": {"type": "array"}, "resource_factors": {"type": "array"}, "plan_factors": {"type": "array"}}, "additionalProperties": true},
+    "interview_map": {"type": "object", "required": ["rounds"], "properties": {"rounds": {"type": "array"}}, "additionalProperties": true},
+    "learning_tracks": {"type": "array"},
+    "question_bank": {"type": "array", "items": {"type": "object"}},
+    "answer_guidance": {"type": "array"},
+    "roadmap": {"type": "object", "required": ["weeks", "weekly_capacity_hours", "phases"], "properties": {"weeks": {"type": "integer", "minimum": 1}, "weekly_capacity_hours": {"type": "number", "minimum": 0}, "phases": {"type": "array"}}, "additionalProperties": true},
+    "application_experiment": {"type": "object"},
+    "sources": {"type": "array", "items": {"type": "object"}},
+    "quality": {"type": "object", "required": ["source_safe", "export_ready", "unresolved_gaps"], "properties": {"source_safe": {"type": "boolean"}, "export_ready": {"type": "boolean"}, "unresolved_gaps": {"type": "array", "items": {"type": "string"}}}, "additionalProperties": true},
+    "delta": {"type": "object"}
+  }
+}

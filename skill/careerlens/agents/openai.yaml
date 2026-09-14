@@ -1,0 +1,6 @@
+interface:
+  display_name: "CareerLens"
+  short_description: "Evidence-bounded career diagnosis and preparation"
+  default_prompt: "Use $careerlens to build a source-auditable career plan from my evidence, target role, constraints, and timeline."
+policy:
+  allow_implicit_invocation: true

@@ -1,0 +1,35 @@
+{
+  "case_id": "agentic-llm-platform",
+  "candidate": {
+    "fictional": true,
+    "source_type": "original_synthetic",
+    "license": "Apache-2.0",
+    "retrieved_at": "2026-08-29"
+  },
+  "primary_target": {
+    "official_source": true,
+    "url": "https://openai.com/careers/software-engineer-api-agents-san-francisco/",
+    "retrieved_at": "2026-08-29",
+    "status_at_retrieval": "active"
+  },
+  "market_baseline": {
+    "official_role_count": 5,
+    "retrieved_at": "2026-08-29",
+    "cross_company_claim_minimum_sources": 2
+  },
+  "files": [
+    {
+      "path": "input/candidate-resume.md",
+      "sha256": "849571cf3ad4c81753466300d9c1aee2cc8657a13addfe5e1ab88e4809645a93"
+    },
+    {
+      "path": "input/primary-role.md",
+      "sha256": "1478c017205a2084af3197af72e1e25d3332e864db2de79577cdd3268206d87e"
+    },
+    {
+      "path": "input/market-baseline.md",
+      "sha256": "457ee17a7a97373d71160029bba35e5dcdfcf561dcc8a8d4bb8ccb3a16f52b83"
+    }
+  ]
+}
+
