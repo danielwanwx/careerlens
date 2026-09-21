@@ -43,8 +43,22 @@ Read only the reference needed for the active step:
 
 - Intake or evidence-state decisions: [intake and diagnosis](references/intake-and-diagnosis.md)
 - Research or volatile claims: [evidence and research policy](references/evidence-and-research-policy.md)
+- Optional public Ashby/Greenhouse acquisition before research: [public job monitor](references/public-job-monitor.md)
 - Artifact assembly: [runbook contract](references/runbook-contract.md)
 - Export or review: [quality gates](references/quality-gates.md)
 
 Validate the final JSON with `scripts/validate_runbook.py`. Render a reviewable
 Markdown projection with `scripts/render_runbook.py`; JSON remains canonical.
+
+The optional public-job monitor is read-only target evidence, never candidate
+evidence or an application action. It is local-only, needs Python 3.11+, and
+requires each user to configure their own Jev credential if they choose its
+observed-link selector. Do not send credentials, resumes, Coach data, or form
+content through that monitor.
+
+When the task is to collect known official Ashby or Greenhouse evidence and the
+local Python 3.11+ monitor is configured, use its monitored fetch before
+`diagnose`. Inspect its bounded evidence, `incomplete`, and `navigation`
+signals; they are not evidence that a role is open. Keep other authorized,
+source-auditable research in the normal CareerLens flow and preserve canonical
+runbook JSON as the final artifact.

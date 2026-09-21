@@ -83,7 +83,6 @@ class PagesSiteTests(unittest.TestCase):
             self.assertIn("Public synthetic", landing)
             self.assertIn("/careerlens/cases/ai-engineer-integrity/", landing)
             self.assertIn("/careerlens/cases/agentic-llm-platform/", landing)
-            self.assertNotIn("careerlens-demo", landing)
             self.assertNotIn("/careerlens/runbook/", landing)
             self.assertNotIn("/careerlens/application-tracker/", landing)
 

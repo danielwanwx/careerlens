@@ -1,0 +1,47 @@
+{
+  "files": [
+    {
+      "destination_path": "public_acquisition/errors.py",
+      "sha256": "d2423f88b3c86c9b4f223b1dd97d334918839d9215461b7f6d5ea7898eef36ca",
+      "source_path": "career_os/errors.py"
+    },
+    {
+      "destination_path": "public_acquisition/schema.py",
+      "sha256": "59b42e0b20a3ea929db7e104b0826323b93b3a01669a623e7460cf4ce2ad5d9c",
+      "source_path": "career_os/schema.py"
+    },
+    {
+      "destination_path": "public_acquisition/providers.py",
+      "sha256": "2605a12e5119e82ed750ca6d193dfb708ad486c016c393756fe617ba9d63767c",
+      "source_path": "career_os/providers.py"
+    },
+    {
+      "destination_path": "public_acquisition/public_fetch.py",
+      "sha256": "70fc9f7c0bb202a13b7dfb8316ba3127bdd6aa9b0609156127594adb7f89d87d",
+      "source_path": "career_os/public_fetch.py"
+    },
+    {
+      "destination_path": "public_acquisition/public_monitor.py",
+      "sha256": "bd95b7525d9ba98d94ba1aabfee1f63877c9e5fa22d7e6c9bfcd3cf47f166c27",
+      "source_path": "career_os/public_monitor.py"
+    },
+    {
+      "destination_path": "public_acquisition/static/public-acquisition.html",
+      "sha256": "94e7dbc7674d346e7cde84a3ab76a2c5cfb40adc8ee56720b89f62f7f2e9faa9",
+      "source_path": "career_os/static/public-acquisition.html"
+    },
+    {
+      "destination_path": "public_acquisition/static/public-acquisition.css",
+      "sha256": "e5fb200e1161e61d5a82b67e4efee32c02c0dbddb602a18e7acca7de7a723193",
+      "source_path": "career_os/static/public-acquisition.css"
+    },
+    {
+      "destination_path": "public_acquisition/static/public-acquisition.js",
+      "sha256": "1030a716771c17b5f83485e863514e70d4352aee859733dddfd0d955083c3ab9",
+      "source_path": "career_os/static/public-acquisition.js"
+    }
+  ],
+  "format_version": 1,
+  "source_revision": "unavailable",
+  "source_root_contract": "explicit root containing career_os/"
+}

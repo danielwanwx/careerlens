@@ -39,6 +39,6 @@ https://github.com/example-org/careerlens
 ## GitHub release summary
 
 Adds a reproducible public AI-engineering case, interactive Runbook, source
-manifest, launch images, deterministic build and verification scripts, and a
-33-second narrated product demo. All candidate data in the case is fictional
-and attributable.
+manifest, launch images, deterministic build and verification scripts, and
+public case-study pages. All candidate data in the case is fictional and
+attributable.

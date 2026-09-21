@@ -383,6 +383,10 @@ class ApplicationTrackerExportTests(unittest.TestCase):
         exporter = load_exporter()
         self.assertEqual("Review", exporter.normalize_status("review_ready"))
 
+    def test_preparing_maps_to_approved(self):
+        exporter = load_exporter()
+        self.assertEqual("Approved", exporter.normalize_status("preparing"))
+
     def test_unknown_status_invalid_date_and_url_fail_closed(self):
         exporter = load_exporter()
         cases = (

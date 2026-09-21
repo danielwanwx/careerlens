@@ -1,0 +1,62 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="referrer" content="no-referrer">
+    <meta name="color-scheme" content="light">
+    <title>公开岗位实时监控</title>
+    <link rel="stylesheet" href="/public-acquisition.css">
+    <script src="/public-acquisition.js" defer></script>
+  </head>
+  <body>
+    <main class="shell">
+      <header class="app-header">
+        <div class="brand" aria-label="Pilot 采集">
+          <span class="pilot-mark" aria-hidden="true"><i></i><i></i><i></i></span>
+          <h1>Pilot · 采集</h1>
+        </div>
+        <div class="header-actions">
+          <span id="run-status" class="badge idle">等待任务</span>
+          <button id="follow-button" type="button">跟随采集</button>
+          <p id="connection-status" class="status idle" role="status" aria-live="polite"></p>
+        </div>
+        <span id="run-title" class="sr-only">等待 Pilot 下发任务</span>
+        <span id="run-detail" class="sr-only">等待任务。</span>
+      </header>
+
+      <section class="live-grid" aria-live="polite">
+        <section class="card live-panel" aria-labelledby="crawl-title">
+          <div class="section-heading">
+            <h2 id="crawl-title"><span class="feed-icon" aria-hidden="true">↗</span>网页</h2>
+          </div>
+          <div id="fetch-content" class="live-cards">
+            <p class="empty">等待</p>
+          </div>
+          <button id="fetch-jump" class="jump-live" type="button" hidden aria-label="跳到最新网页事件" title="跳到最新">↓</button>
+        </section>
+
+        <section class="card live-panel" aria-labelledby="jev-title">
+          <div class="section-heading">
+            <h2 id="jev-title"><span class="feed-icon" aria-hidden="true">✦</span>Jev</h2>
+          </div>
+          <div id="jev-content" class="live-cards">
+            <p class="empty">等待</p>
+          </div>
+          <button id="jev-jump" class="jump-live" type="button" hidden aria-label="跳到最新 Jev 事件" title="跳到最新">↓</button>
+        </section>
+      </section>
+
+      <section id="results-panel" class="card results-panel" aria-labelledby="results-title" hidden>
+        <div class="section-heading">
+          <div>
+            <h2 id="results-title">本次结果</h2>
+          </div>
+        </div>
+        <div id="results" class="results">
+          <p class="empty">等待</p>
+        </div>
+      </section>
+    </main>
+  </body>
+</html>

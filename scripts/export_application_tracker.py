@@ -205,6 +205,7 @@ _STATUS_ALIASES = {
     "review_ready": "Review",
     "pending_review": "Review",
     "approved": "Approved",
+    "preparing": "Approved",
     "submitted": "Submitted",
     "applied": "Submitted",
     "interview": "Interview",

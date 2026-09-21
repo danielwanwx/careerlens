@@ -24,7 +24,7 @@ A visitor should be able to:
 5. understand the most important preparation actions in under five minutes.
 
 The repository is launch-ready only when the canonical JSON, Markdown report,
-HTML report, README summary, screenshots, GIF, and MP4 tell the same story.
+HTML report, README summary, and static screenshots tell the same story.
 
 ## Selected Approach
 
@@ -35,8 +35,8 @@ Use a result-first presentation:
 - the evidence trail immediately follows and explains why the result is
   trustworthy;
 - the five-minute developer workflow remains the quickstart;
-- a silent, captioned video demonstrates the flow without adding narration or
-  a separate audio asset.
+- the public case-study pages demonstrate the flow without collecting visitor
+  data.
 
 Alternatives rejected:
 
@@ -44,9 +44,7 @@ Alternatives rejected:
   concerns before demand is validated;
 - a real person's public resume cannot be copied merely because it is visible;
 - a developer-only command demo undersells the career outcome;
-- a trust-only hero is differentiated but slower to understand;
-- a narrated video is harder to maintain and provides little additional value
-  for GitHub and HN visitors.
+- a trust-only hero is differentiated but slower to understand.
 
 ## Case Sources
 
@@ -240,7 +238,7 @@ JSON. It will not call a model or the network during normal rebuilds.
 - required decision and evidence-state text across Markdown and HTML;
 - absence of private local paths, secret-like values, or unapproved personal
   identifiers;
-- expected media files, dimensions, duration, and non-zero size;
+- expected static launch images, dimensions, and non-zero size;
 - local links referenced from README and launch documents.
 
 ## Failure Handling
@@ -253,8 +251,8 @@ JSON. It will not call a model or the network during normal rebuilds.
   HTML.
 - Uncited number or claim: remove it or attach a source reference.
 - Private path or candidate data: fail verification and regenerate the asset.
-- Media tool unavailable: ship the complete static report and screenshots; do
-  not block the evidence package on video alone.
+- Image tooling unavailable: ship the complete static report; do not block the
+  evidence package on an optional preview image.
 
 ## Testing and Review
 
@@ -266,7 +264,7 @@ Required checks:
 3. source-backed case JSON passes strict validation;
 4. two consecutive builds produce no diff;
 5. HTML is inspected at desktop, mobile, light, dark, and print layouts;
-6. MP4 and GIF are visually reviewed frame-by-frame at key timestamps;
+6. static launch images are visually reviewed at their native dimensions;
 7. README commands are tested from a fresh clone;
 8. an independent quality review covers correctness, readability,
    architecture, security/privacy, media licensing, and launch claims.

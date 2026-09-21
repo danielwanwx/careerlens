@@ -130,6 +130,33 @@ python3 skill/careerlens/scripts/render_runbook.py \
 
 The scripts use only the Python standard library and support Python 3.9+.
 
+### Optional: monitor public ATS evidence locally
+
+CareerLens also includes an optional Python 3.11+ local monitor for bounded,
+read-only public Ashby and Greenhouse job evidence. It is separate from the
+Python 3.9+ runbook scripts, accepts no candidate data, submits no forms, and
+does not establish that a role is open.
+
+```bash
+python3.11 skill/careerlens/scripts/public_job_monitor.py serve --prompt-key
+```
+
+It is fixed to `127.0.0.1` and exposes its form at `/acquire`; do not publish,
+proxy, or add browser credentials to it. Jev can only select from already
+observed public links. Each user supplies their own credential through
+an already-set `TYPESAFE_API_KEY` process environment value, their current
+macOS account's `typesafe-ai-jev` Keychain entry, or the one-process masked
+prompt shown above:
+
+```bash
+python3.11 skill/careerlens/scripts/public_job_monitor.py serve
+```
+
+The key is never accepted by the browser, URL, report, or command-line option.
+Without a credential, the monitor must show Jev as unavailable rather than
+inventing a selection. See the [public job monitor reference](skill/careerlens/references/public-job-monitor.md)
+for CLI usage, safety boundaries, and byte-exact vendor verification.
+
 ## What it produces
 
 - candidate and target evidence separation;

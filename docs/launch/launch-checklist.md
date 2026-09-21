@@ -10,7 +10,6 @@
 - [x] `scripts/verify_launch_assets.py` passes without exceptions.
 - [x] README links resolve on GitHub.
 - [x] Social preview and report screenshot are legible at native dimensions.
-- [x] MP4 and GIF have verified dimensions and duration.
 
 ## GitHub presentation
 
