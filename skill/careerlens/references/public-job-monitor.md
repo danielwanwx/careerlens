@@ -58,10 +58,20 @@ coverage or a recommendation to apply.
 
 ## Optional Jev selection
 
-Jev is only allowed to choose from links already observed in the public ATS
-scope. It receives one Choice question per call, never a resume, full private
-profile, browser credential, or application form. Its output is an observed
-link-selection aid, not proof that a job is open or that a candidate qualifies.
+Jev is only allowed to choose from already observed, canonical exact-role URLs
+on Ashby, Greenhouse, Lever, or Workday. Board roots, listings, search results,
+aggregators, articles, and every other URL are skipped locally before a Choice
+request with the fixed `locally_excluded` status and `unverified_source`
+reason. This selection guard does not expand the monitor's Ashby/Greenhouse
+seed-fetch support. The run stream records safe local-skip events without
+source text, and Jev receives the canonical query-free role URL rather than an
+arbitrary observed URL.
+
+Jev receives one Choice question per call and has no resume, tracker,
+candidate-record, private-profile, browser-credential, or application-form
+input. It receives only the public task, bounded public labels, and canonical
+ATS role URLs. Its output is an observed link-selection aid, not proof that a
+job is open or that a candidate qualifies.
 
 Each user must configure their own Jev credential. The quickest local option is
 the masked prompt already shown above. It retains the key only in that server

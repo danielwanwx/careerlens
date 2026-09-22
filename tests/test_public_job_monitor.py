@@ -12,7 +12,9 @@ import subprocess
 import sys
 import tempfile
 import threading
+from types import SimpleNamespace
 import unittest
+from unittest.mock import patch
 from urllib.request import Request, urlopen
 
 
@@ -295,6 +297,128 @@ class PublicJobMonitorTests(unittest.TestCase):
         self.assertEqual("completed", final["status"])
         self.assertEqual(RUN_ID, final["run_id"])
         self.assertIn('"event_id":1', completed.stderr)
+
+    def test_canonical_public_ats_role_url_requires_exact_role_routes(self):
+        from public_acquisition import public_fetch
+
+        self.assertEqual(
+            "https://jobs.ashbyhq.com/example/platform-engineer",
+            public_fetch.canonical_public_ats_role_url(
+                "https://jobs.ashbyhq.com/example/platform-engineer?source=public"
+            ),
+        )
+        self.assertEqual(
+            "https://job-boards.greenhouse.io/example/jobs/123",
+            public_fetch.canonical_public_ats_role_url(
+                "https://job-boards.greenhouse.io/example/jobs/123?gh_src=public"
+            ),
+        )
+        self.assertEqual(
+            "https://jobs.lever.co/example/abc123",
+            public_fetch.canonical_public_ats_role_url("https://jobs.lever.co/example/abc123?source=public"),
+        )
+        self.assertEqual(
+            "https://example.wd5.myworkdayjobs.com/en-US/External/job/Remote/Platform-Engineer_R-1",
+            public_fetch.canonical_public_ats_role_url(
+                "https://example.wd5.myworkdayjobs.com/en-US/External/job/Remote/Platform-Engineer_R-1?source=public"
+            ),
+        )
+        for url in (
+            "https://jobs.ashbyhq.com/example",
+            "https://jobs.ashbyhq.com/example/jobs",
+            "https://jobs.ashbyhq.com/example/platform-engineer/apply",
+            "https://jobs.lever.co/example",
+            "https://jobs.lever.co/example/jobs",
+            "https://jobs.lever.co/example/abc123/apply",
+            "https://job-boards.greenhouse.io/example",
+            "https://job-boards.greenhouse.io/example/jobs/123/apply",
+            "https://myworkdayjobs.com/en-US/External/job/Remote/Platform-Engineer_R-1",
+            "https://example.wd5.myworkdayjobs.com/en-US/External/job/Remote",
+            "https://example.wd5.myworkdayjobs.com/en-US/External/apply/job/Remote/Platform-Engineer_R-1",
+            "https://www.ai.engineer/articles/staff-ai-engineer",
+        ):
+            self.assertIsNone(public_fetch.canonical_public_ats_role_url(url), url)
+
+    def test_jev_prefilter_forwards_only_canonical_exact_ats_roles(self):
+        from public_acquisition import public_fetch, public_monitor
+
+        ai_url = "https://www.ai.engineer/articles/staff-ai-engineer"
+        greenhouse_url = "https://job-boards.greenhouse.io/example/jobs/123?gh_src=public"
+        candidate_article_url = "https://www.ai.engineer/articles/CANDIDATE_TRACKER_SENTINEL"
+        pages = {
+            "https://www.ai.engineer": b"""
+                <a href=\"https://www.ai.engineer/articles/staff-ai-engineer\">Staff AI Engineer role analysis</a>
+                <a href=\"https://www.ai.engineer/articles/CANDIDATE_TRACKER_SENTINEL\">Candidate experience article</a>
+            """,
+            "https://job-boards.greenhouse.io/example": b"""
+                <a href=\"https://job-boards.greenhouse.io/example/jobs/123?gh_src=public\">Platform Engineer</a>
+            """,
+        }
+
+        def fetcher(url, allowed_hosts, timeout):
+            return public_fetch._Page(url, url, 200, "text/html", pages[url], 1.0)
+
+        class _Jev:
+            def __init__(self):
+                self.requests = []
+
+            def predict(self, request):
+                self.requests.append(request)
+                return SimpleNamespace(
+                    answers={"next_link": SimpleNamespace(choice="done")},
+                    model="jev-test",
+                    usage={"input_tokens": 1, "output_tokens": 1},
+                )
+
+        provider = _Jev()
+        events = []
+        seed_urls = ("https://www.ai.engineer", "https://job-boards.greenhouse.io/example")
+
+        with (
+            patch.object(
+                public_fetch,
+                "validate_public_acquisition_request",
+                return_value=("public platform role", seed_urls, 4, 1.0, True, False),
+            ),
+            patch.object(
+                public_fetch,
+                "_ats_plan",
+                side_effect=lambda seed: public_fetch._Plan(seed, seed, "seed_page"),
+            ),
+            patch.object(public_fetch, "_safe_url", side_effect=lambda url, *args, **kwargs: str(url)),
+        ):
+            result = public_fetch.PublicAcquirer(fetcher=fetcher, jev_provider=provider).acquire(
+                "public platform role", seed_urls, max_pages=4, event_callback=events.append
+            )
+
+        self.assertEqual(1, len(provider.requests))
+        request = provider.requests[0]
+        self.assertEqual(
+            [{"id": "link_0", "label": "Platform Engineer", "url": "https://job-boards.greenhouse.io/example/jobs/123"}],
+            request.state["observed_links"],
+        )
+        request_text = json.dumps(request.state)
+        self.assertNotIn(ai_url, request_text)
+        self.assertNotIn("CANDIDATE_TRACKER_SENTINEL", request_text)
+        self.assertNotIn("source_url", request_text)
+        skipped = [event for event in events if event.get("type") == "jev_candidate_skipped"]
+        self.assertEqual(
+            ["unverified_source", "unverified_source"],
+            [event["reason"] for event in skipped],
+        )
+        self.assertEqual(ai_url, skipped[0]["observed_url"])
+        self.assertEqual(candidate_article_url, skipped[1]["observed_url"])
+        self.assertIn("jev_candidates_locally_excluded", result["incomplete"])
+        self.assertEqual(
+            {
+                "type": "jev_candidate_skipped",
+                "status": "locally_excluded",
+                "reason": "unverified_source",
+                "route": "selected_observed_page",
+                "observed_url": ai_url,
+            },
+             public_monitor._safe_event(skipped[0]),
+         )
 
 
 class _Registry:

@@ -48,6 +48,11 @@ ACTION_PATH_TERMS = frozenset(
 SECRET_QUERY_TERMS = frozenset(
     {"token", "key", "secret", "signature", "sig", "auth", "password", "credential"}
 )
+_LISTING_PATH_TERMS = frozenset(
+    {"career", "careers", "job", "jobs", "listing", "listings", "opening", "openings", "position", "positions", "role", "roles", "search"}
+)
+_JEV_SKIP_UNVERIFIED_SOURCE = "unverified_source"
+_JEV_SKIP_STATUS = "locally_excluded"
 
 
 class PublicFetchError(ValueError):
@@ -88,6 +93,22 @@ class _ObservedLink:
 
 
 @dataclass(frozen=True)
+class _JevCandidate:
+    """One exact public ATS role link permitted in a Jev Choice request."""
+
+    link: _ObservedLink
+    canonical_url: str
+
+
+@dataclass(frozen=True)
+class _JevCandidateSkip:
+    """A bounded local explanation for an observed link Jev must not receive."""
+
+    link: _ObservedLink
+    reason: str
+
+
+@dataclass(frozen=True)
 class _Question:
     qid: str
     type: str
@@ -119,6 +140,80 @@ def _compact(value: Any, limit: int = 400) -> str:
     if not isinstance(value, str):
         return ""
     return " ".join(value.replace("\x00", " ").split())[:limit]
+
+
+def canonical_public_ats_role_url(value: Any) -> str | None:
+    """Return a query-free exact public ATS role URL or ``None``.
+
+    This is a deterministic structural allowlist for the Jev Choice boundary.
+    It does not fetch, resolve, or infer a source's authority from its text.
+    """
+
+    if not isinstance(value, str) or not value or len(value) > 2_048 or "\x00" in value:
+        return None
+    try:
+        parsed = urlsplit(value)
+        host = (parsed.hostname or "").lower().rstrip(".")
+        port = parsed.port
+    except ValueError:
+        return None
+    if (
+        parsed.scheme.lower() != "https"
+        or not host
+        or parsed.username is not None
+        or parsed.password is not None
+        or port not in (None, 443)
+        or any(key.casefold() in SECRET_QUERY_TERMS for key, _ in parse_qsl(parsed.query, keep_blank_values=True))
+    ):
+        return None
+    parts = tuple(part for part in parsed.path.split("/") if part)
+    lower_parts = tuple(part.casefold() for part in parts)
+
+    def role_segment(segment: str) -> bool:
+        return bool(segment) and segment not in ACTION_PATH_TERMS and segment not in _LISTING_PATH_TERMS
+
+    # Ashby and Lever roles have exactly a board and a job identifier.  Requiring
+    # that shape keeps their board roots and their action/listing routes out of
+    # the Choice request without relying on page text or source metadata.
+    two_part_role = len(parts) == 2 and all(role_segment(part) for part in lower_parts)
+    exact = (
+        (host == "jobs.ashbyhq.com" and two_part_role)
+        or (
+            host in {"job-boards.greenhouse.io", "boards.greenhouse.io"}
+            and len(parts) == 3
+            and role_segment(lower_parts[0])
+            and lower_parts[1] == "jobs"
+            and parts[2].isdigit()
+        )
+        or (host in {"jobs.lever.co", "jobs.eu.lever.co"} and two_part_role)
+        or (
+            host.endswith(".myworkdayjobs.com")
+            and len(parts) >= 5
+            and lower_parts[-3] == "job"
+            and all(role_segment(part) for part in lower_parts[:-3])
+            and role_segment(lower_parts[-2])
+            and role_segment(lower_parts[-1])
+        )
+    )
+    if not exact:
+        return None
+    return urlunsplit(("https", host, "/" + "/".join(parts), "", ""))
+
+
+def _prefilter_jev_candidates(
+    observed: Sequence[_ObservedLink],
+) -> tuple[list[_JevCandidate], list[_JevCandidateSkip]]:
+    """Keep only exact public ATS roles before a Jev request is constructed."""
+
+    candidates: list[_JevCandidate] = []
+    skipped: list[_JevCandidateSkip] = []
+    for link in observed:
+        canonical_url = canonical_public_ats_role_url(link.observed_url)
+        if canonical_url is None:
+            skipped.append(_JevCandidateSkip(link, _JEV_SKIP_UNVERIFIED_SOURCE))
+            continue
+        candidates.append(_JevCandidate(link, canonical_url))
+    return candidates, skipped
 
 
 def _emit_event(callback: PublicFetchEventCallback | None, event: Mapping[str, Any]) -> None:
@@ -676,11 +771,11 @@ def _provider(timeout: float) -> JevHttpProvider | None:
 def _choose(
     provider: Any,
     task: str,
-    candidates: Sequence[_ObservedLink],
+    candidates: Sequence[_JevCandidate],
     known_roles: Sequence[Mapping[str, Any]],
 ) -> tuple[str | None, dict[str, Any]]:
     criteria = {
-        f"link_{index}": f"Observed public link {index}: {candidate.label}"
+        f"link_{index}": f"Observed exact public ATS role {index}: {candidate.link.label}"
         for index, candidate in enumerate(candidates)
     }
     criteria["done"] = "Stop within the visited seed scope; this is not a claim of global job coverage."
@@ -690,14 +785,18 @@ def _choose(
             "data_scope": "public_job_evidence_only",
             "task": task,
             "observed_links": [
-                {"id": f"link_{index}", "label": item.label, "url": item.observed_url, "source_url": item.source_url}
+                {
+                    "id": f"link_{index}",
+                    "label": _compact(item.link.label, 180),
+                    "url": item.canonical_url,
+                }
                 for index, item in enumerate(candidates)
             ],
-            "retrieved_structured_postings": [
-                {"title": _compact(item.get("title"), 240), "job_id": _compact(item.get("job_id"), 160)}
-                for item in known_roles
-            ],
-            "policy": {"select_only_observed_link": True, "no_forms_or_submission": True},
+            "retrieved_structured_posting_count": len(known_roles),
+            "policy": {
+                "select_only_canonical_public_ats_role": True,
+                "no_forms_or_submission": True,
+            },
         },
         questions={
             "next_link": _Question(
@@ -728,7 +827,7 @@ def _choose(
 
 
 def _choice_event_summary(
-    candidates: Sequence[_ObservedLink], known_roles: Sequence[Mapping[str, Any]]
+    candidates: Sequence[_JevCandidate], known_roles: Sequence[Mapping[str, Any]]
 ) -> dict[str, Any]:
     """Project the actual Choice prompt/input into a safe, bounded event.
 
@@ -750,8 +849,8 @@ def _choice_event_summary(
             "observed_links": [
                 {
                     "id": f"link_{index}",
-                    "label": _compact(candidate.label, 180),
-                    "url": candidate.observed_url,
+                    "label": _compact(candidate.link.label, 180),
+                    "url": candidate.canonical_url,
                 }
                 for index, candidate in enumerate(candidates[:3])
             ],
@@ -923,10 +1022,28 @@ class PublicAcquirer:
             "usage_complete": True,
         }
         visited = {item.fetch_url for item in plans}
+        emitted_local_skips: set[tuple[str, str, str]] = set()
         for step in range(MAX_LINK_STEPS):
             available = [item for item in observed if item.fetch_url not in visited]
-            candidates = available[:MAX_LINKS]
-            if len(available) > len(candidates):
+            candidates, locally_skipped = _prefilter_jev_candidates(available)
+            for skipped in locally_skipped:
+                identity = (skipped.link.observed_url, skipped.link.fetch_url, skipped.reason)
+                if identity in emitted_local_skips:
+                    continue
+                emitted_local_skips.add(identity)
+                event: dict[str, Any] = {
+                    "type": "jev_candidate_skipped",
+                    "status": _JEV_SKIP_STATUS,
+                    "reason": skipped.reason,
+                    "route": skipped.link.route,
+                }
+                event["observed_url"] = skipped.link.observed_url
+                _emit_event(event_callback, event)
+            if locally_skipped:
+                incomplete.append("jev_candidates_locally_excluded")
+            eligible_count = len(candidates)
+            candidates = candidates[:MAX_LINKS]
+            if len(candidates) < eligible_count:
                 incomplete.append("remaining_observed_links_not_offered_to_jev")
             if not candidates or len(pages) >= max_pages:
                 break
@@ -978,7 +1095,7 @@ class PublicAcquirer:
                 incomplete.append("jev_choice_unavailable")
                 break
             try:
-                selected = candidates[int(choice.removeprefix("link_"))]
+                selected = candidates[int(choice.removeprefix("link_"))].link
             except (ValueError, IndexError):
                 incomplete.append("jev_choice_invalid")
                 break

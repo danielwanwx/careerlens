@@ -17,12 +17,12 @@
     },
     {
       "destination_path": "public_acquisition/public_fetch.py",
-      "sha256": "70fc9f7c0bb202a13b7dfb8316ba3127bdd6aa9b0609156127594adb7f89d87d",
+      "sha256": "d99d91f91de2d3ef6870b0748a5c9d2a51f2098c035d1e30798a6159dc8a8708",
       "source_path": "career_os/public_fetch.py"
     },
     {
       "destination_path": "public_acquisition/public_monitor.py",
-      "sha256": "bd95b7525d9ba98d94ba1aabfee1f63877c9e5fa22d7e6c9bfcd3cf47f166c27",
+      "sha256": "f75927f6d826404489d93bd4cb8c584413ebdf17ab0e92799dd411842f31a5de",
       "source_path": "career_os/public_monitor.py"
     },
     {

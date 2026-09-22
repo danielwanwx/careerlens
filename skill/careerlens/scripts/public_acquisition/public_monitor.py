@@ -37,6 +37,7 @@ _EVENT_TYPES = frozenset(
         "fetch_finished",
         "jev_choice_started",
         "jev_choice_finished",
+        "jev_candidate_skipped",
         "selected_link",
     }
 )
@@ -44,6 +45,8 @@ _STAGES = frozenset(("initial_parallel_fetch", "jev_selected_observed_link"))
 _SECRET_QUERY_TERMS = frozenset(
     {"token", "key", "secret", "signature", "sig", "auth", "password", "credential"}
 )
+_JEV_SKIP_REASONS = frozenset({"unverified_source"})
+_JEV_SKIP_STATUS = "locally_excluded"
 
 
 @dataclass
@@ -257,6 +260,17 @@ def _safe_event(raw: Mapping[str, Any]) -> dict[str, Any] | None:
             elapsed_ms = _finite_number(raw.get("elapsed_ms"))
             if elapsed_ms is not None:
                 event["elapsed_ms"] = elapsed_ms
+        return event
+    if event_type == "jev_candidate_skipped":
+        status = _safe_code(raw.get("status"))
+        reason = _safe_code(raw.get("reason"))
+        route = _safe_token(raw.get("route"))
+        if status != _JEV_SKIP_STATUS or reason not in _JEV_SKIP_REASONS or not route:
+            return None
+        event.update({"status": status, "reason": reason, "route": route})
+        observed_url = _safe_public_url(raw.get("observed_url"))
+        if observed_url:
+            event["observed_url"] = observed_url
         return event
     call_id = raw.get("call_id")
     choice = _safe_choice(raw.get("choice"))
